@@ -1,5 +1,5 @@
 # 🧩 Jogo de Sudoku em Java (Swing)
-![img_1.png](img_1.png)
+![img_2.png](img_2.png)
 ## 📌 Descrição do Projeto
 Este projeto consiste no desenvolvimento de um jogo de Sudoku utilizando a linguagem Java e a biblioteca gráfica Swing, aplicando o padrão arquitetural MVC (Model–View–Controller).
 
@@ -96,17 +96,6 @@ O jogo pode apresentar os seguintes estados:
 * **Model**: Responsável pelos dados do jogo e validações (SudokuBoard, SudokuGenerator)
 * **View**: Interface gráfica e interação com o usuário (SudokuFrame, StartScreen)
 * **Controller**: Intermedia ações do usuário e regras do jogo (SudokuController)
-
----
-
-## 📦 Histórico de Commits (Resumo)
-* Estrutura inicial do projeto
-* Modelo do tabuleiro Sudoku
-* Interface gráfica básica
-* Controller e integração MVC
-* Menu interativo e validações
-* Fases com geração automática
-* Rascunhos, contador e vinheta inicial
 
 ---
 

@@ -1,105 +1,53 @@
 package br.com.sudoku.controller;
 
-import br.com.sudoku.model.SudokuBoard;
+import br.com.sudoku.model.*;
 import br.com.sudoku.view.SudokuFrame;
-
-import javax.swing.*;
-import java.util.HashSet;
-import java.util.Set;
 
 public class SudokuController {
 
-    private SudokuBoard model;
+    private SudokuBoard model = new SudokuBoard();
     private SudokuFrame view;
 
     private int selectedRow = -1;
     private int selectedCol = -1;
 
-    private Set<Integer>[][] notes = new HashSet[9][9];
-
-    public SudokuController(SudokuFrame view, String[] args) {
+    public SudokuController(SudokuFrame view) {
         this.view = view;
-        this.model = new SudokuBoard();
-        initNotes();
-        loadFixedNumbers(args);
     }
 
-    private void initNotes() {
-        for (int i = 0; i < 9; i++)
-            for (int j = 0; j < 9; j++)
-                notes[i][j] = new HashSet<>();
+    public void startNewGame() {
+        int holes = 40;
+        int[][] puzzle = SudokuGenerator.generatePuzzle(holes);
+        model.load(puzzle);
+        selectedRow = -1;
     }
 
-    private void loadFixedNumbers(String[] args) {
-        for (String arg : args) {
-            String[] parts = arg.split(",");
-            model.setFixed(
-                    Integer.parseInt(parts[0]),
-                    Integer.parseInt(parts[1]),
-                    Integer.parseInt(parts[2])
-            );
-        }
+    public SudokuBoard getModel() {
+        return model;
     }
 
-    public void selectCell(int row, int col) {
-        selectedRow = row;
-        selectedCol = col;
+    public void selectCell(int r, int c) {
+        selectedRow = r;
+        selectedCol = c;
     }
 
-    public int getValue(int row, int col) {
-        return model.get(row, col);
-    }
-
-    public boolean isFixed(int row, int col) {
-        return model.isFixed(row, col);
-    }
-
-    // ================= AÇÕES =================
-
-    public void insertNumber() {
+    public void insertNumber(int value) {
         if (selectedRow == -1 || model.isFixed(selectedRow, selectedCol)) return;
-
-        String input = JOptionPane.showInputDialog("Número (1-9):");
-        if (input == null) return;
-
-        int value = Integer.parseInt(input);
         model.set(selectedRow, selectedCol, value);
-        notes[selectedRow][selectedCol].clear();
-        view.updateCell(selectedRow, selectedCol, value);
+        view.refreshBoard();
     }
 
     public void removeNumber() {
         if (selectedRow == -1 || model.isFixed(selectedRow, selectedCol)) return;
-
         model.set(selectedRow, selectedCol, 0);
-        notes[selectedRow][selectedCol].clear();
-        view.updateCell(selectedRow, selectedCol, 0);
+        view.refreshBoard();
     }
 
-    public void note() {
-        if (selectedRow == -1 || model.isFixed(selectedRow, selectedCol)) return;
-
-        String input = JOptionPane.showInputDialog("Rascunho (1-9):");
-        if (input == null) return;
-
-        int n = Integer.parseInt(input);
-        if (!notes[selectedRow][selectedCol].add(n))
-            notes[selectedRow][selectedCol].remove(n);
-
-        view.updateNotes(selectedRow, selectedCol, notes[selectedRow][selectedCol]);
-    }
-
-    public void showStatus() {
-        String status;
-
-        if (!model.isComplete()) {
-            status = "Jogo incompleto";
-        } else {
-            status = "Jogo completo";
-        }
-
-        status += model.hasErrors() ? " (com erros)" : " (sem erros)";
-
-        JOptionPane.showMessageDialog(view, status);
+    public void finishGame() {
+        if (!model.isComplete() || model.hasErrors()) return;
+        javax.swing.JOptionPane.showMessageDialog(view,
+                "Parabéns! Sudoku resolvido 🎉");
+        startNewGame();
+        view.refreshBoard();
     }
 }

@@ -18,12 +18,13 @@ public class SudokuFrame extends JFrame {
         controller = new SudokuController(this, args);
 
         setTitle("Sudoku");
-        setSize(650, 650);
+        setSize(750, 650);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
         add(createBoard(), BorderLayout.CENTER);
+        add(createMenu(), BorderLayout.EAST);
 
         setVisible(true);
     }
@@ -64,8 +65,23 @@ public class SudokuFrame extends JFrame {
                 board.add(cell);
             }
         }
-
         return board;
+    }
+
+    private JPanel createMenu() {
+        JPanel menu = new JPanel(new GridLayout(2, 1, 5, 5));
+        menu.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        JButton insert = new JButton("Inserir número");
+        JButton remove = new JButton("Remover número");
+
+        insert.addActionListener(e -> controller.insertNumber());
+        remove.addActionListener(e -> controller.removeNumber());
+
+        menu.add(insert);
+        menu.add(remove);
+
+        return menu;
     }
 
     private void selectCell(int row, int col) {
@@ -75,9 +91,18 @@ public class SudokuFrame extends JFrame {
 
         selectedRow = row;
         selectedCol = col;
+        controller.selectCell(row, col);
 
         if (!controller.isFixed(row, col)) {
             cells[row][col].setBackground(new Color(184, 207, 229));
+        }
+    }
+
+    public void updateCell(int row, int col, int value) {
+        if (value == 0) {
+            cells[row][col].setText("");
+        } else {
+            cells[row][col].setText(String.valueOf(value));
         }
     }
 }

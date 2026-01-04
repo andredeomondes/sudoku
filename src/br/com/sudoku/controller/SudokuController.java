@@ -3,51 +3,75 @@ package br.com.sudoku.controller;
 import br.com.sudoku.model.*;
 import br.com.sudoku.view.SudokuFrame;
 
+import javax.swing.*;
+
 public class SudokuController {
 
     private SudokuBoard model = new SudokuBoard();
     private SudokuFrame view;
 
-    private int selectedRow = -1;
-    private int selectedCol = -1;
+    private int selRow = -1;
+    private int selCol = -1;
+    private int correctCount = 0;
 
     public SudokuController(SudokuFrame view) {
         this.view = view;
     }
 
     public void startNewGame() {
-        int holes = 40;
-        int[][] puzzle = SudokuGenerator.generatePuzzle(holes);
+        int[][] puzzle = SudokuGenerator.generatePuzzle(40);
         model.load(puzzle);
-        selectedRow = -1;
+        correctCount = 0;
     }
 
     public SudokuBoard getModel() {
         return model;
     }
 
-    public void selectCell(int r, int c) {
-        selectedRow = r;
-        selectedCol = c;
+    public int getCorrectCount() {
+        return correctCount;
     }
 
-    public void insertNumber(int value) {
-        if (selectedRow == -1 || model.isFixed(selectedRow, selectedCol)) return;
-        model.set(selectedRow, selectedCol, value);
+    public void selectCell(int r, int c) {
+        selRow = r;
+        selCol = c;
+    }
+
+    public void insertNumber(int v) {
+        if (selRow == -1 || model.isFixed(selRow, selCol)) return;
+        model.set(selRow, selCol, v);
+        correctCount++;
         view.refreshBoard();
     }
 
     public void removeNumber() {
-        if (selectedRow == -1 || model.isFixed(selectedRow, selectedCol)) return;
-        model.set(selectedRow, selectedCol, 0);
+        if (selRow == -1 || model.isFixed(selRow, selCol)) return;
+        model.clear(selRow, selCol);
         view.refreshBoard();
     }
 
-    public void finishGame() {
-        if (!model.isComplete() || model.hasErrors()) return;
-        javax.swing.JOptionPane.showMessageDialog(view,
-                "Parabéns! Sudoku resolvido 🎉");
-        startNewGame();
+    public void toggleNote(int v) {
+        if (selRow == -1) return;
+        model.toggleNote(selRow, selCol, v);
         view.refreshBoard();
     }
+    public void finishGame() {
+
+        if (!model.isComplete()) {
+            JOptionPane.showMessageDialog(view,
+                    "O jogo ainda não está completo.\nPreencha todos os espaços.");
+            return;
+        }
+
+        if (model.countErrors() > 0) {
+            JOptionPane.showMessageDialog(view,
+                    "O jogo contém erros.\nCorrija antes de finalizar.");
+            return;
+        }
+
+        JOptionPane.showMessageDialog(view,
+                "🎉 Parabéns! Você concluiu o Sudoku corretamente!");
+        System.exit(0);
+    }
+
 }

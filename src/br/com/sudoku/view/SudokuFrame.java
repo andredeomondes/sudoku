@@ -1,5 +1,7 @@
 package br.com.sudoku.view;
 
+import br.com.sudoku.controller.SudokuController;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -9,7 +11,11 @@ public class SudokuFrame extends JFrame {
     private int selectedRow = -1;
     private int selectedCol = -1;
 
+    private SudokuController controller;
+
     public SudokuFrame(String[] args) {
+
+        controller = new SudokuController(this, args);
 
         setTitle("Sudoku");
         setSize(650, 650);
@@ -32,7 +38,6 @@ public class SudokuFrame extends JFrame {
                 JButton cell = new JButton();
                 cell.setFont(font);
                 cell.setFocusPainted(false);
-                cell.setBackground(Color.WHITE);
 
                 int top = (row % 3 == 0) ? 3 : 1;
                 int left = (col % 3 == 0) ? 3 : 1;
@@ -41,6 +46,15 @@ public class SudokuFrame extends JFrame {
 
                 cell.setBorder(BorderFactory.createMatteBorder(
                         top, left, bottom, right, Color.BLACK));
+
+                int value = controller.getValue(row, col);
+                if (value != 0) {
+                    cell.setText(String.valueOf(value));
+                    cell.setEnabled(false);
+                    cell.setBackground(new Color(220, 220, 220));
+                } else {
+                    cell.setBackground(Color.WHITE);
+                }
 
                 final int r = row;
                 final int c = col;
@@ -55,13 +69,15 @@ public class SudokuFrame extends JFrame {
     }
 
     private void selectCell(int row, int col) {
-        if (selectedRow != -1) {
+        if (selectedRow != -1 && !controller.isFixed(selectedRow, selectedCol)) {
             cells[selectedRow][selectedCol].setBackground(Color.WHITE);
         }
 
         selectedRow = row;
         selectedCol = col;
 
-        cells[row][col].setBackground(new Color(184, 207, 229));
+        if (!controller.isFixed(row, col)) {
+            cells[row][col].setBackground(new Color(184, 207, 229));
+        }
     }
 }

@@ -6,6 +6,8 @@ import java.awt.*;
 public class SudokuFrame extends JFrame {
 
     private JButton[][] cells = new JButton[9][9];
+    private int selectedRow = -1;
+    private int selectedCol = -1;
 
     public SudokuFrame(String[] args) {
 
@@ -40,11 +42,26 @@ public class SudokuFrame extends JFrame {
                 cell.setBorder(BorderFactory.createMatteBorder(
                         top, left, bottom, right, Color.BLACK));
 
+                final int r = row;
+                final int c = col;
+                cell.addActionListener(e -> selectCell(r, c));
+
                 cells[row][col] = cell;
                 board.add(cell);
             }
         }
 
         return board;
+    }
+
+    private void selectCell(int row, int col) {
+        if (selectedRow != -1) {
+            cells[selectedRow][selectedCol].setBackground(Color.WHITE);
+        }
+
+        selectedRow = row;
+        selectedCol = col;
+
+        cells[row][col].setBackground(new Color(184, 207, 229));
     }
 }

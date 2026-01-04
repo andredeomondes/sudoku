@@ -4,6 +4,7 @@ import br.com.sudoku.controller.SudokuController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Set;
 
 public class SudokuFrame extends JFrame {
 
@@ -18,7 +19,7 @@ public class SudokuFrame extends JFrame {
         controller = new SudokuController(this, args);
 
         setTitle("Sudoku");
-        setSize(750, 650);
+        setSize(780, 650);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -69,17 +70,23 @@ public class SudokuFrame extends JFrame {
     }
 
     private JPanel createMenu() {
-        JPanel menu = new JPanel(new GridLayout(2, 1, 5, 5));
+        JPanel menu = new JPanel(new GridLayout(4, 1, 5, 5));
         menu.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        JButton insert = new JButton("Inserir número");
-        JButton remove = new JButton("Remover número");
+        JButton insert = new JButton("Inserir");
+        JButton remove = new JButton("Remover");
+        JButton note = new JButton("Rascunho");
+        JButton status = new JButton("Status");
 
         insert.addActionListener(e -> controller.insertNumber());
         remove.addActionListener(e -> controller.removeNumber());
+        note.addActionListener(e -> controller.note());
+        status.addActionListener(e -> controller.showStatus());
 
         menu.add(insert);
         menu.add(remove);
+        menu.add(note);
+        menu.add(status);
 
         return menu;
     }
@@ -99,10 +106,13 @@ public class SudokuFrame extends JFrame {
     }
 
     public void updateCell(int row, int col, int value) {
-        if (value == 0) {
-            cells[row][col].setText("");
-        } else {
-            cells[row][col].setText(String.valueOf(value));
-        }
+        cells[row][col].setText(value == 0 ? "" : String.valueOf(value));
+    }
+
+    public void updateNotes(int row, int col, Set<Integer> notes) {
+        StringBuilder sb = new StringBuilder("<html><small>");
+        for (int n : notes) sb.append(n).append(" ");
+        sb.append("</small></html>");
+        cells[row][col].setText(sb.toString());
     }
 }

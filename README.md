@@ -1,5 +1,6 @@
 # 🧩 Jogo de Sudoku em Java (Swing)
-![img_2.png](img_2.png)
+<img width="1919" height="991" alt="image" src="https://github.com/user-attachments/assets/8d5fceb3-21e2-4733-992f-7ade975007b1" />
+
 ## 📌 Descrição do Projeto
 Este projeto consiste no desenvolvimento de um jogo de Sudoku utilizando a linguagem Java e a biblioteca gráfica Swing, aplicando o padrão arquitetural MVC (Model–View–Controller).
 
